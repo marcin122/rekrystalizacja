@@ -1,3 +1,4 @@
+import java.util.Random;
 
 public class Grain {
     private int[][] board;
@@ -6,7 +7,15 @@ public class Grain {
 
     private boolean periodicBC=true;
 
+
+    int pos1;
+    int pos2;
+    int pos3;
+    Random random=new Random();
+
     public Grain() {
+        randPos();
+
         board=new int[21][21];
         previousBoard=new int[21][21];
 
@@ -15,6 +24,18 @@ public class Grain {
                 board[i][j]=0;
                 previousBoard[i][j]=0;
             }
+        }
+    }
+
+    public void randPos(){
+        pos1=random.nextInt(8);
+        pos2=random.nextInt(8);
+        pos3=random.nextInt(8);
+        while(pos1==pos2){
+            pos2=random.nextInt(8);
+        }
+        while (pos3==pos1 || pos3==pos2){
+            pos3=random.nextInt(8);
         }
     }
 
@@ -99,7 +120,7 @@ public class Grain {
     }
 
     public void Moore(int x, int y){
-        int[] tab=new int[9];
+        int[] tab=new int[8];
         int n=0;
         for (int i=0;i<tab.length;i++) tab[i]=0;
 
@@ -124,18 +145,17 @@ public class Grain {
         int[] tab=new int[4];
         for (int i=0;i<tab.length;i++) tab[i]=0;
 
-        if (x >= 0 && x < 21 && y >= 0 && y < 21) {
-            tab[0] = previousBoard[x][y - 1];
-            tab[1] = previousBoard[x + 1][y];
-            tab[2] = previousBoard[x][y + 1];
-            tab[3] = previousBoard[x - 1][y];
-        }
+            if(y>0) tab[0] = previousBoard[x][y - 1];
+            if(x<20) tab[1] = previousBoard[x + 1][y];
+            if(y<20) tab[2] = previousBoard[x][y + 1];
+            if(x>0) tab[3] = previousBoard[x - 1][y];
+
 
         board[x][y]=max(tab);
     }
 
     public void hexagonalLeft(int x, int y){
-        int[] tab=new int[9];
+        int[] tab=new int[6];
         int n=0;
         for (int i=0;i<tab.length;i++) tab[i]=0;
 
@@ -159,7 +179,7 @@ public class Grain {
     }
 
     public void hexagonalRight(int x, int y){
-        int[] tab=new int[9];
+        int[] tab=new int[6];
         int n=0;
         for (int i=0;i<tab.length;i++) tab[i]=0;
 
@@ -184,10 +204,58 @@ public class Grain {
 
     public void hexagonalRand(int x, int y){
 
+
+        int[] tab=new int[8];
+        int n=0;
+        for (int i=0;i<tab.length;i++) tab[i]=0;
+
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && j < 21 && i >= 0 && i < 21) {
+                    if (i==x && y==j) {
+                        continue;
+                    }
+                    tab[n] = previousBoard[i][j];
+                    n++;
+                }
+                else{
+                    n++;
+                }
+            }
+        }
+        tab[pos1]=0;
+        tab[pos2]=0;
+        board[x][y]=max(tab);
     }
 
     public void pentagonalRand(int x, int y){
+        Random random=new Random();
+        int pos=random.nextInt(4);
 
+        int[] tab=new int[8];
+        int n=0;
+        for (int i=0;i<tab.length;i++) tab[i]=0;
+
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (j >= 0 && j < 21 && i >= 0 && i < 21) {
+                    if (i==x && y==j) {
+                        continue;
+                    }
+                    tab[n] = previousBoard[i][j];
+                    n++;
+                }
+                else{
+                    n++;
+                }
+            }
+        }
+
+        tab[pos1]=0;
+        tab[pos2]=0;
+        tab[pos3]=0;
+
+        board[x][y]=max(tab);
     }
 
     public int max(int[] tab){
@@ -247,6 +315,8 @@ public class Grain {
     }
 
     public void checkBoardLife(){
+        randPos();
+
         clearBoard();
         for(int i=0;i<previousBoard.length;i++){
             for(int j=0;j<previousBoard[i].length;j++){

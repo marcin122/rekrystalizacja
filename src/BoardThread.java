@@ -26,7 +26,7 @@ public class BoardThread extends Thread {
                 stopGrowth(true);
             boardGrainListener.onAreaCompute(grain);
             try {
-                sleep(1500);
+                sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
