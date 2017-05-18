@@ -109,11 +109,12 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
 //        drawBoard();
         for(int i=0;i<20;i++){
             for(int j=0;j<20;j++){
-                if(!g.isBlockFree(i,j)){
-                    fillBlock(i,j);
+                if(g.isBlockFree(i,j,false)){
+                    clearBlock(i,j);
                 }
                 else
-                    clearBlock(i,j);
+                  fillBlock(i,j,palleteColors.getColor(g.getBlockColor(i,j)));
+//                    fillBlock(i,j,Color.BLUE);
             }
         }
     }
@@ -122,11 +123,19 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void clearBoard(){
         drawBackground();
         drawBoard();
+        boardThread.stopGrowth(true);
+        try {
+            boardThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         grain.newGrain();
     }
 
     @Override
-    public void startGrowth() {
+    public void startGrowth(int opt, boolean perBC) {
+        grain.setSasOption(opt);
+        grain.setPeriodicBC(perBC);
         boardThread =new BoardThread(grain);
         boardThread.setBoardGrainListener(this);
         boardThread.start();
@@ -160,7 +169,7 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
         int posX=calculatePositionBoard(x);
         int posY=calculatePositionBoard(y);
 
-            if(grain.isBlockFree(posX,posY)){
+            if(grain.isBlockFree(posX,posY,radiusOption)){
                 int color=random.nextInt(palleteColors.getNumColors());
                 grain.setBlock(posX, posY, radiusOption, color);
                 fillBlock(posX, posY, palleteColors.getColor(color));
@@ -193,15 +202,16 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     @Override
     public void fillRandPoints(int num)  {
 
-        for(int i=0;i<num;i++){
-            int posX=random.nextInt(20);
-            int posY=random.nextInt(20);
-            if(grain.isBlockFree(posX,posY)){
-                int color=random.nextInt(palleteColors.getNumColors());
-                grain.setBlock(posX, posY, radiusOption, color);
-                fillBlock(posX, posY, palleteColors.getColor(color));
+            for (int i = 0; i < num; ) {
+                int posX = random.nextInt(20);
+                int posY = random.nextInt(20);
+                if (grain.isBlockFree(posX, posY, radiusOption)) {
+                    int color = random.nextInt(palleteColors.getNumColors());
+                    grain.setBlock(posX, posY, radiusOption, color);
+                    fillBlock(posX, posY, palleteColors.getColor(color));
+                    i++;
+                }
             }
-        }
     }
 
     @Override

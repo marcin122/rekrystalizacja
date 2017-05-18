@@ -3,8 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Random;
-
+import java.util.*;
 
 public class MainWindow extends JFrame implements ActionListener {
     private JButton losujButton;
@@ -14,14 +13,35 @@ public class MainWindow extends JFrame implements ActionListener {
     private JButton startButton;
     private JRadioButton losoweRadioButton;
     private JRadioButton rownomierneRadioButton;
+    private JButton clearButton;
+    private JRadioButton vonNeumannRadioButton;
+    private JRadioButton mooreRadioButton;
+    private JRadioButton hexagonalLeftRadioButton;
+    private JRadioButton hexagonalRightRadioButton;
+    private JRadioButton hexagonalLosoweRadioButton;
+    private JRadioButton pentagonalLosoweRadioButton;
+    private JRadioButton periodyczneRadioButton;
+    private JRadioButton nieperiodyczneRadioButton;
     private DrawPanel drawPanel;
 
     private ButtonGroup losujGroup=new ButtonGroup();
+    private ButtonGroup sasGroup=new ButtonGroup();
+    private ButtonGroup bcGroup=new ButtonGroup();
 
     private BufferedImage img;
     private BoardImage boardImage;
 
     public MainWindow() {
+
+        sasGroup.add(vonNeumannRadioButton);
+        sasGroup.add(mooreRadioButton);
+        sasGroup.add(hexagonalLeftRadioButton);
+        sasGroup.add(hexagonalRightRadioButton);
+        sasGroup.add(hexagonalLosoweRadioButton);
+        sasGroup.add(pentagonalLosoweRadioButton);
+
+        bcGroup.add(periodyczneRadioButton);
+        bcGroup.add(nieperiodyczneRadioButton);
 
         losujGroup.add(losoweRadioButton);
         losujGroup.add(rownomierneRadioButton);
@@ -38,15 +58,16 @@ public class MainWindow extends JFrame implements ActionListener {
             }
         });
 
-                panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
+        panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
         panel2.add(new DrawPanel("DrawPanel"));
 
         boardImage =new BoardImage();
         losujButton.addActionListener(this);
         startButton.addActionListener(this);
+        clearButton.addActionListener(this);
 
         setContentPane(panel1);
-        setSize(new Dimension(620,500));
+        setSize(new Dimension(620,520));
         setTitle("Rozrost ziaren");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -76,8 +97,18 @@ public class MainWindow extends JFrame implements ActionListener {
                 e1.printStackTrace();
             }
         }
-        else if(e.getSource()== startButton){
-            boardImage.startGame();
+        else if(e.getSource() == startButton){
+            Enumeration<AbstractButton> radioBtns= sasGroup.getElements();
+            int i=0;
+            while (radioBtns.hasMoreElements()){
+                i++;
+                if(radioBtns.nextElement().isSelected()){
+                    boardImage.startGrowth(i,pentagonalLosoweRadioButton.isSelected());
+                }
+            }
+        }
+        else if (e.getSource() == clearButton){
+            boardImage.clearBoard();
         }
     }
 }

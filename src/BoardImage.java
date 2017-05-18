@@ -14,8 +14,8 @@ public class BoardImage {
         boardImageInteface.radiusOption(i);
     }
 
-    public void startGame(){
-        boardImageInteface.startGrowth();
+    public void startGrowth(int opt, boolean perBC){
+        boardImageInteface.startGrowth(opt, perBC);
     }
 
     public void clearBoard(){
