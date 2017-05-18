@@ -1,23 +1,23 @@
 
 public class BoardThread extends Thread {
 
-    private BoardGameListener boardGameListener;
-    private Game game=new Game();
+    private BoardGrainListener boardGrainListener;
+    private Grain grain =new Grain();
 
-    public BoardThread(Game game) {
-        this.game = game;
+    public BoardThread(Grain grain) {
+        this.grain = grain;
     }
 
-    public void setBoardGameListener(BoardGameListener boardGameListener) {
-        this.boardGameListener = boardGameListener;
+    public void setBoardGrainListener(BoardGrainListener boardGrainListener) {
+        this.boardGrainListener = boardGrainListener;
     }
 
     @Override
     public void run() {
         super.run();
         while (true) {
-            game.checkBoardLife();
-            boardGameListener.onAreaCompute(game);
+            grain.checkBoardLife();
+            boardGrainListener.onAreaCompute(grain);
             try {
                 sleep(500);
             } catch (InterruptedException e) {

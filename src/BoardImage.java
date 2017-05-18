@@ -10,8 +10,12 @@ public class BoardImage {
         boardImageInteface.fillRandPoints(num);
     }
 
+    public void setRadiusOption(boolean i){
+        boardImageInteface.radiusOption(i);
+    }
+
     public void startGame(){
-        boardImageInteface.startGame();
+        boardImageInteface.startGrowth();
     }
 
     public void clearBoard(){

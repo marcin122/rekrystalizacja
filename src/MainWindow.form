@@ -45,26 +45,18 @@
             <children>
               <component id="b1993" class="javax.swing.JRadioButton" binding="losoweRadioButton" default-binding="true">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="losowe"/>
                 </properties>
               </component>
-              <component id="2335e" class="javax.swing.JRadioButton" binding="równomierneRadioButton" default-binding="true">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="równomierne"/>
-                </properties>
-              </component>
-              <component id="adc54" class="javax.swing.JRadioButton" binding="zPromieniemRRadioButton" default-binding="true">
+              <component id="2335e" class="javax.swing.JRadioButton" binding="rownomierneRadioButton" default-binding="true">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="z promieniem R"/>
+                  <text value="równomierne"/>
                 </properties>
               </component>
               <component id="64fbd" class="javax.swing.JButton" binding="losujButton">
@@ -74,6 +66,12 @@
                 <properties>
                   <text value="Losuj"/>
                 </properties>
+              </component>
+              <component id="4c2e5" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
               </component>
             </children>
           </grid>

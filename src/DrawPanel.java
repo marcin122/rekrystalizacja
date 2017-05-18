@@ -5,13 +5,16 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-public class DrawPanel extends JPanel implements MouseListener, BoardImageInteface, BoardGameListener {
+public class DrawPanel extends JPanel implements MouseListener, BoardImageInteface, BoardGrainListener {
 
     private BufferedImage img;
     private String name;
     private int[] border=new int[21];
-    private Game game;
+    private Grain grain;
     private BoardThread boardThread;
+    private boolean radiusOption=false;
+    private PalleteColors palleteColors=new PalleteColors();
+    private Random random=new Random();
 
     public DrawPanel(String name) {
         this.name=name;
@@ -25,7 +28,7 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
 
         addMouseListener(this);
 
-        game=new Game();
+        grain =new Grain();
     }
 
     public BufferedImage getImg() {
@@ -44,8 +47,8 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
         this.repaint();
     }
 
-    public void drawYellowPoint(int x, int y){
-        img.setRGB(x,y,Color.YELLOW.getRGB());
+    public void drawWhitePoint(int x, int y){
+        img.setRGB(x,y,Color.WHITE.getRGB());
         this.repaint();
     }
 
@@ -57,7 +60,7 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void drawBackground(){
         for(int i=1;i<img.getHeight();i++){
             for(int j=1;j<img.getWidth();j++) {
-                drawYellowPoint(i,j);
+                drawWhitePoint(i,j);
             }
         }
     }
@@ -72,10 +75,23 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
         }
     }
 
+    public void drawPoint(int x, int y, Color c){
+        img.setRGB(x,y,c.getRGB());
+        this.repaint();
+    }
+
     public void fillBlock(int x, int y){
         for(int i = border[x]+1, n = i+20; i<n; i++){
             for(int j = border[y]+1, m = j+20; j<m; j++){
-                drawRedPoint(i,j);
+                drawPoint(i,j);
+            }
+        }
+    }
+
+    public void fillBlock(int x, int y, Color c){
+        for(int i = border[x]+1, n = i+20; i<n; i++){
+            for(int j = border[y]+1, m = j+20; j<m; j++){
+                drawPoint(i,j,c);
             }
         }
     }
@@ -83,12 +99,12 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void clearBlock(int x, int y){
         for(int i = border[x]+1, n = i+20; i<n; i++){
             for(int j = border[y]+1, m = j+20; j<m; j++){
-                drawYellowPoint(i,j);
+                drawWhitePoint(i,j);
             }
         }
     }
 
-    public void updateBoard(Game g){
+    public void updateBoard(Grain g){
 //        drawBackground();
 //        drawBoard();
         for(int i=0;i<20;i++){
@@ -106,13 +122,13 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void clearBoard(){
         drawBackground();
         drawBoard();
-        game.newGame();
+        grain.newGrain();
     }
 
     @Override
-    public void startGame() {
-        boardThread =new BoardThread(game);
-        boardThread.setBoardGameListener(this);
+    public void startGrowth() {
+        boardThread =new BoardThread(grain);
+        boardThread.setBoardGrainListener(this);
         boardThread.start();
     }
 
@@ -143,8 +159,15 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
 
         int posX=calculatePositionBoard(x);
         int posY=calculatePositionBoard(y);
-        game.setBlock(posX,posY);
-        fillBlock(posX,posY);
+
+            if(grain.isBlockFree(posX,posY)){
+                int color=random.nextInt(palleteColors.getNumColors());
+                grain.setBlock(posX, posY, radiusOption, color);
+                fillBlock(posX, posY, palleteColors.getColor(color));
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Wybrane pole jest zajęte", "Błąd",JOptionPane.ERROR_MESSAGE);
+            }
     }
 
     @Override
@@ -169,20 +192,25 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
 
     @Override
     public void fillRandPoints(int num)  {
-        Random random=new Random();
 
         for(int i=0;i<num;i++){
             int posX=random.nextInt(20);
             int posY=random.nextInt(20);
-            if(game.isBlockFree(posX,posY)){
-                fillBlock(posX,posY);
-                game.setBlock(posX,posY);
+            if(grain.isBlockFree(posX,posY)){
+                int color=random.nextInt(palleteColors.getNumColors());
+                grain.setBlock(posX, posY, radiusOption, color);
+                fillBlock(posX, posY, palleteColors.getColor(color));
             }
         }
     }
 
     @Override
-    public void onAreaCompute(Game game) {
-        updateBoard(game);
+    public void radiusOption(boolean i) {
+        radiusOption=i;
+    }
+
+    @Override
+    public void onAreaCompute(Grain grain) {
+        updateBoard(grain);
     }
 }
