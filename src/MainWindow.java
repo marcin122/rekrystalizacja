@@ -103,7 +103,7 @@ public class MainWindow extends JFrame implements ActionListener {
             while (radioBtns.hasMoreElements()){
                 i++;
                 if(radioBtns.nextElement().isSelected()){
-                    boardImage.startGrowth(i,pentagonalLosoweRadioButton.isSelected());
+                    boardImage.startGrowth(i,periodyczneRadioButton.isSelected());
                 }
             }
         }
