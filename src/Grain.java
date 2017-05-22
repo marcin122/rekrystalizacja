@@ -15,8 +15,8 @@ public class Grain {
     public Grain() {
         randPos();
 
-        board=new int[21][21];
-        previousBoard=new int[21][21];
+        board=new int[400][400];
+        previousBoard=new int[400][400];
 
         for(int i=0;i<board.length;i++){
             for(int j=0;j<board[i].length;j++){
@@ -79,8 +79,8 @@ public class Grain {
     public int numFreeBlock(){
         int num=0;
 
-        for(int i=0;i<21;i++){
-            for(int j=0;j<21;j++){
+        for(int i=0;i<board.length;i++){
+            for(int j=0;j<board.length;j++){
                 if(board[i][j]==0) num++;
             }
         }
@@ -130,34 +130,34 @@ public class Grain {
 
                 if(periodicBC){
                     if(i==-1 && j==-1) {
-                        tab[n]=previousBoard[20][20];
+                        tab[n]=previousBoard[board.length-1][board.length-1];
                         n++;
                     }
-                    else if(i==-1 && j==21){
-                        tab[n]=previousBoard[20][0];
+                    else if(i==-1 && j==board.length){
+                        tab[n]=previousBoard[board.length-1][0];
                         n++;
                     }
-                    else if(i==21 && j==-1){
-                        tab[n]=previousBoard[0][20];
+                    else if(i==board.length && j==-1){
+                        tab[n]=previousBoard[0][board.length-1];
                         n++;
                     }
-                    else if(i==21 && j==21) {
+                    else if(i==board.length && j==board.length) {
                         tab[n]=previousBoard[0][0];
                         n++;
                     }
-                    else if(i>=0 && i<21 && j==-1) {
-                        tab[n]=previousBoard[i][20];
+                    else if(i>=0 && i<board.length && j==-1) {
+                        tab[n]=previousBoard[i][board.length-1];
                         n++;
                     }
-                    else if(i>=0 && i<21 && j==21){
+                    else if(i>=0 && i<board.length && j==board.length){
                         tab[n]=previousBoard[i][0];
                         n++;
                     }
-                    else if(j>=0 && j<21 && i==-1){
-                        tab[n]=previousBoard[20][j];
+                    else if(j>=0 && j<board.length && i==-1){
+                        tab[n]=previousBoard[board.length-1][j];
                         n++;
                     }
-                    else if(j>=0 && j<21 && i==21) {
+                    else if(j>=0 && j<board.length && i==board.length) {
                         tab[n]=previousBoard[0][j];
                         n++;
 
@@ -168,7 +168,7 @@ public class Grain {
                     }
                 }
                 else{
-                    if (j >= 0 && j < 21 && i >= 0 && i < 21) {
+                    if (j >= 0 && j < board.length && i >= 0 && i < board.length) {
 
                         tab[n] = previousBoard[i][j];
                         n++;

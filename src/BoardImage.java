@@ -22,4 +22,10 @@ public class BoardImage {
         boardImageInteface.clearBoard();
     }
 
+    public void pauseGrowth(){
+        boardImageInteface.pauseGrowth();
+    }
+    public void startGrowth(){
+        boardImageInteface.startGrowth();
+    }
 }

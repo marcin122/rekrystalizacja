@@ -18,9 +18,8 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
 
     public DrawPanel(String name) {
         this.name=name;
-        img=new BufferedImage(422,422,BufferedImage.TYPE_INT_ARGB);
+        img=new BufferedImage(400,400,BufferedImage.TYPE_INT_ARGB);
         drawBackground();
-        drawBoard();
 
         for(int i=1, n=0;i<img.getWidth();i+=21, n++){
             border[n]=i;
@@ -42,11 +41,6 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
         g2.drawImage(img,0,0,this);
     }
 
-    public void drawPoint(int x, int y){
-        img.setRGB(x,y,Color.BLACK.getRGB());
-        this.repaint();
-    }
-
     public void drawWhitePoint(int x, int y){
         img.setRGB(x,y,Color.WHITE.getRGB());
         this.repaint();
@@ -65,56 +59,21 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
         }
     }
 
-
-    public void drawBoard(){
-        for(int i=1;i<img.getHeight();i+=21){
-            for(int j=1;j<img.getWidth();j++){
-                drawPoint(j,i);
-                drawPoint(i,j);
-            }
-        }
-    }
-
     public void drawPoint(int x, int y, Color c){
         img.setRGB(x,y,c.getRGB());
         this.repaint();
     }
 
-    public void fillBlock(int x, int y){
-        for(int i = border[x]+1, n = i+20; i<n; i++){
-            for(int j = border[y]+1, m = j+20; j<m; j++){
-                drawPoint(i,j);
-            }
-        }
-    }
-
-    public void fillBlock(int x, int y, Color c){
-        for(int i = border[x]+1, n = i+20; i<n; i++){
-            for(int j = border[y]+1, m = j+20; j<m; j++){
-                drawPoint(i,j,c);
-            }
-        }
-    }
-
-    public void clearBlock(int x, int y){
-        for(int i = border[x]+1, n = i+20; i<n; i++){
-            for(int j = border[y]+1, m = j+20; j<m; j++){
-                drawWhitePoint(i,j);
-            }
-        }
-    }
-
     public void updateBoard(Grain g){
-//        drawBackground();
-//        drawBoard();
-        for(int i=0;i<20;i++){
-            for(int j=0;j<20;j++){
+
+        for(int i=0;i<400;i++){
+            for(int j=0;j<400;j++){
                 if(g.isBlockFree(i,j,false)){
-                    clearBlock(i,j);
+//                    drawPoint(i,j,grain.getBlockColor(i,j));
                 }
-                else
-                  fillBlock(i,j,palleteColors.getColor(g.getBlockColor(i,j)));
-//                    fillBlock(i,j,Color.BLUE);
+                else{
+                    drawPoint(i,j,palleteColors.getColor(grain.getBlockColor(i,j)));
+                }
             }
         }
     }
@@ -122,7 +81,6 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     @Override
     public void clearBoard(){
         drawBackground();
-        drawBoard();
         boardThread.stopGrowth(true);
         try {
             boardThread.join();
@@ -136,20 +94,13 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void startGrowth(int opt, boolean perBC) {
         grain.setSasOption(opt);
         grain.setPeriodicBC(perBC);
-        boardThread =new BoardThread(grain);
-        boardThread.setBoardGrainListener(this);
-        boardThread.start();
-    }
 
-    public int calculatePositionImage(int n){
-        int result, position=0;
-
-        for(int i=0;i<border.length;i++){
-            position=i;
-            if(i+1>=border.length || n<border[i+1]) break;
+            boardThread = new BoardThread(grain);
+            boardThread.setBoardGrainListener(this);
+        boardThread.stopGrowth(false);
+        if(!boardThread.isAlive()) {
+            boardThread.start();
         }
-        result=border[position]+1;
-        return result;
     }
 
     public int calculatePositionBoard(int n){
@@ -172,7 +123,7 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
             if(grain.isBlockFree(posX,posY,radiusOption)){
                 int color=random.nextInt(palleteColors.getNumColors());
                 grain.setBlock(posX, posY, radiusOption, color);
-                fillBlock(posX, posY, palleteColors.getColor(color));
+                drawPoint(posX, posY, palleteColors.getColor(color));
             }
             else{
                 JOptionPane.showMessageDialog(null,"Wybrane pole jest zajęte", "Błąd",JOptionPane.ERROR_MESSAGE);
@@ -203,12 +154,12 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     public void fillRandPoints(int num)  {
 
             for (int i = 0; i < num; ) {
-                int posX = random.nextInt(20);
-                int posY = random.nextInt(20);
+                int posX = random.nextInt(400);
+                int posY = random.nextInt(400);
                 if (grain.isBlockFree(posX, posY, radiusOption)) {
                     int color = random.nextInt(palleteColors.getNumColors());
                     grain.setBlock(posX, posY, radiusOption, color);
-                    fillBlock(posX, posY, palleteColors.getColor(color));
+                    drawPoint(posX, posY, palleteColors.getColor(color));
                     i++;
                 }
             }
@@ -217,6 +168,20 @@ public class DrawPanel extends JPanel implements MouseListener, BoardImageIntefa
     @Override
     public void radiusOption(boolean i) {
         radiusOption=i;
+    }
+
+    @Override
+    public void pauseGrowth() {
+        try {
+            boardThread.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void startGrowth() {
+        boardThread.notify();
     }
 
     @Override

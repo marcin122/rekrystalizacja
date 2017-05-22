@@ -4,4 +4,6 @@ public interface BoardImageInteface {
      void radiusOption(boolean i);
      void clearBoard();
      void startGrowth(int opt, boolean perBC);
+     void startGrowth();
+     void pauseGrowth();
 }

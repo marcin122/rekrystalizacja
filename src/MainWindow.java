@@ -22,6 +22,8 @@ public class MainWindow extends JFrame implements ActionListener {
     private JRadioButton pentagonalLosoweRadioButton;
     private JRadioButton periodyczneRadioButton;
     private JRadioButton nieperiodyczneRadioButton;
+    private JButton pauzaButton;
+    private JButton startButton1;
     private DrawPanel drawPanel;
 
     private ButtonGroup losujGroup=new ButtonGroup();
@@ -65,6 +67,8 @@ public class MainWindow extends JFrame implements ActionListener {
         losujButton.addActionListener(this);
         startButton.addActionListener(this);
         clearButton.addActionListener(this);
+        pauzaButton.addActionListener(this);
+        startButton1.addActionListener(this);
 
         setContentPane(panel1);
         setSize(new Dimension(620,520));
@@ -109,6 +113,13 @@ public class MainWindow extends JFrame implements ActionListener {
         }
         else if (e.getSource() == clearButton){
             boardImage.clearBoard();
+        }
+
+        else if (e.getSource() == pauzaButton){
+            boardImage.pauseGrowth();
+        }
+        else if (e.getSource()==startButton1){
+            boardImage.startGrowth();
         }
     }
 }
